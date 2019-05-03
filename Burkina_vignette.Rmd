@@ -1,6 +1,6 @@
 ---
-title: "Sediment management in a reservoir in Burkina Faso"
-author: "Cory Whitney, Denis Lanzanova and Eike Luedeling, University of Bonn, Germany"
+title: "Example - Internal Only"
+author: "Cory Whitney"
 date: "`r Sys.Date()`"
 csl: elsevier-harvard.csl
 output: 
@@ -8,10 +8,6 @@ output:
     toc: true
     number_sections: true
     fig_caption: true
-vignette: >
-  %\VignetteIndexEntry{Sediment management in a reservoir in Burkina Faso}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 # Decision model for reservoir sedimentation management
