@@ -10,26 +10,21 @@ output:
     fig_caption: true
 ---
 
-# Decision model for reservoir sedimentation management
+# Decision model 
 
-Decision Analysis (DA) can be used to support practical decisions in the face of risk and uncertainty (Hubbard 2014; Howard & Abbas 2016). DA can generate robust and science-based decision support by integrating data and expert knowledge on decisions and the systems they strive to influence. We demonstrate DA model development techniques to support the difficult task of deciding which interventions to choose, if any, given a collection of possible interventions to implement. The approach embraces complexity, makes recommendations that account for the imperfect state of available knowledge and identifies critical uncertainties that decision-supporting research should address. Such decision analysis is highly applicable in data-scarce environments, such as the Upper Volta River Basin, where science has traditionally struggled to provide actionable information to policy-makers, development practitioners, NGOs and rural communities (Katic & Morris 2016). 
+Decision Analysis (DA) can be used to support practical decisions in the face of risk and uncertainty (Hubbard 2014; Howard & Abbas 2016). DA can generate robust and science-based decision support by integrating data and expert knowledge on decisions and the systems they strive to influence. We demonstrate DA model development techniques to support the difficult task of deciding which interventions to choose, if any, given a collection of possible interventions to implement. The approach embraces complexity, makes recommendations that account for the imperfect state of available knowledge and identifies critical uncertainties that decision-supporting research should address. Such decision analysis is highly applicable in data-scarce environments.
 
-The ```decisionSupport()``` function is part of the package ```decisionSupport``` (Luedeling and Göhring, 2017) in the R programming environment (R Core Team 2017). This package was used for a Monte-Carlo-based selection of a sedimentation management strategy for a reservoir in Burkina Faso. These reservoirs have multiple benefits for rural communities (Cecchi et al. 2008; Bharati et al. 2008; Venot & Cecchi 2011; Boelee et al. 2013) and are important for food security and livelihoods (Palmieri et al. 2001; Wisser et al. 2010; Poussin et al. 2015). Sedimentation is a major impediment for the functioning of these reservoirs (Kondolf et al. 2014; Schmengler 2011; Chitata et al. 2014). The design of an efficient sedimentation management intervention for the reservoir of Lagdwenda required assessment of multiple uncertain quantities and risks. The reservoir is a good prototype for testing the strategies of sedimentation management in the Volta basin. Most of the reservoirs in the Upper Volta present similar conditions and context (climatic environment, type of crops cultivated, cultural practices and the sedimentation issue) (Birner et al 2010).
+The ```decisionSupport()``` function is part of the package ```decisionSupport``` (Luedeling and Göhring, 2017) in the R programming environment (R Core Team 2017). This package was used for a Monte-Carlo-based selection. 
 
 A number of specialized participatory approaches and modeling techniques helped us to construct and parameterize a model based on the knowledge of local expert stakeholders. These approaches are outlined, in part, by Allan et al (2010), David et al. (2014), Fred et al (2017), Morgan (2014), Martin et al (2012) and Samantha et al (2009).
-
-```{r, child = 'Overview.Rmd'}
-```
 
 ## Model structure
 
 By coding a participatory conceptual model as a Monte Carlo simulation using the ```decisionSupport()``` function in the R package ```decisionSupport``` we were able to offer decision makers probable outcomes in terms of Net Present Value (NPV) and cash flow for the intervention decisions (including combined interventions) and to identify variables that most affected the overall outcome of the different decisions. 
 
-![Diagram of the overall model structure of interventions to reduce sediment deposition in the Lagdwenda reservoir in Burkina Faso. Net Present Value (NPV) for all interventions. D/S = downstream formal irrigation area (scheme 1); U/S = upstream informal cropping area (scheme 2).](Model_Overview_DL_big.png){width=500px}
-
 ## Input table
 
-The input table ```Sediment_input_table.csv``` contains the variables used in the model with distributions described by a 90% confidence interval, as well as the shape of the distribution. 
+The input table ```Example_input_table.csv``` contains the variables used in the model with distributions described by a 90% confidence interval, as well as the shape of the distribution. 
 
 ```{r, echo = FALSE, results = 'asis'}
 #format(scientific=FALSE)
@@ -38,9 +33,9 @@ library(knitr)
 library(kableExtra)
 options(knitr.kable.NA = " ") #remove NA
 options(knitr.table.format = "html")
-#x<-as.data.frame(read.csv("Sediment_input_table.csv"))
+#x<-as.data.frame(read.csv("Example_input_table.csv"))
 #x[is.na(x)] <- "_" #replace NA with underscore
-knitr::kable(read.csv("Sediment_input_table_decriptions.csv"), caption = "Table of expert estimates for all model variables. The column 'distribution' lists the distribution shapes used, including constant (const), 0-1 truncated normal (tnorm_0_1), positive normal (posnorm) and normal (norm)")%>%
+knitr::kable(read.csv("Example_input_table_decriptions.csv"), caption = "Table of expert estimates for all model variables. The column 'distribution' lists the distribution shapes used, including constant (const), 0-1 truncated normal (tnorm_0_1), positive normal (posnorm) and normal (norm)")%>%
   kable_styling(full_width = T, font_size = 10)
 ```
 
@@ -51,7 +46,7 @@ make_variables<-function(est,n=1)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir=.GlobalEnv)
 }
 
-make_variables(estimate_read_csv("Sediment_input_table.csv"))
+make_variables(estimate_read_csv("Example_input_table.csv"))
 ```
 
 # Implementing the model in R
@@ -70,7 +65,7 @@ The identified ex-post and ex-ante risks were all assigned probability ranges fr
 
 We used the ```chance_event()``` function for simulation of ex-ante risks as impacts on the implementation of the three interventions.
 
-Probability distributions for the chance variables ```dredge_NonPopInvolv```, ```dredge_NonDonorsInvolv``` are defined in the input table ```Sediment_input_table.csv```.
+Probability distributions for the chance variables ```dredge_NonPopInvolv```, ```dredge_NonDonorsInvolv``` are defined in the input table ```Example_input_table.csv```.
 
 #### Chance event of two ex-ante risks on the dredging intervention
 
@@ -101,7 +96,7 @@ The ex-ante risk of lack of donor involvement was not considered valid for the d
 
 ### Chance events and ex-post risks
 
-We used the ```chance_event()``` function for simulation of the four ex-post risks as impacts on the benefits. Probability distributions for the chance variables ```NaturHazard```, ```BadMaintenance``` and ```BadDesign``` included in the code below, are all defined in the input table ```Sediment_input_table.csv```.
+We used the ```chance_event()``` function for simulation of the four ex-post risks as impacts on the benefits. Probability distributions for the chance variables ```NaturHazard```, ```BadMaintenance``` and ```BadDesign``` included in the code below, are all defined in the input table ```Example_input_table.csv```.
 
 ```{r}
   HazardEvent<-chance_event(NaturHazard,value_if = 1,value_if_not =0,n=n_years)
@@ -119,7 +114,7 @@ In the case of the ex-post risk of design problems (```BadDesign```) of the rese
 
 Many of the variables included in the model were considered to vary considerably over time and we chose to include this variation in the time series analyses. To do this we used the value varier function ```vv()``` to produce a time series that contains variation from a specified mean and coefficient of variation. 
 
-The probability distributions for the mean of the variable to be varied (the first argument in the ```vv()``` function) and the coefficient of variation (```var_CV```) are listed among the variables in ```Sediment_input_table.csv```. ```var_CV``` is assigned an upper and lower bound (5% and 20%). 
+The probability distributions for the mean of the variable to be varied (the first argument in the ```vv()``` function) and the coefficient of variation (```var_CV```) are listed among the variables in ```Example_input_table.csv```. ```var_CV``` is assigned an upper and lower bound (5% and 20%). 
 
 The value varier function ```vv()``` was applied to the identified ex-ante risks on the irrigation area.
 
@@ -311,7 +306,7 @@ If the buffer strip intervention was chosen but either the local populations, in
 
 ### Costs of the interventions
 
-All interventions had a number of costs that were identified by the local experts. The probability distributions for these are listed among the variables in ```Sediment_input_table.csv```.  
+All interventions had a number of costs that were identified by the local experts. The probability distributions for these are listed among the variables in ```Example_input_table.csv```.  
 
 ####Costs of dredging
 ```{r, eval=FALSE}         
@@ -368,7 +363,7 @@ The ```vv()``` function was used to simulate the expected variation in the cost 
 
 ### Decline in irrigable area over time
 
-Because sediments accumulate in the reservoir, the dam gradually loses its capacity to store water, which may become a binding constraint for irrigation in the foreseeable future. Because of this, in the irrigation scheme downstream, the total irrigable area (area that can be irrigated given the water stock in the reservoir) was expected to decline over time. This decline in irrigable area would, however, be delayed by the various interventions. This was modeled as a sigmoid using the ```gompertz_yield``` function to simulate these delays in loss of irrigable area over time. 
+Because Examples accumulate in the reservoir, the dam gradually loses its capacity to store water, which may become a binding constraint for irrigation in the foreseeable future. Because of this, in the irrigation scheme downstream, the total irrigable area (area that can be irrigated given the water stock in the reservoir) was expected to decline over time. This decline in irrigable area would, however, be delayed by the various interventions. This was modeled as a sigmoid using the ```gompertz_yield``` function to simulate these delays in loss of irrigable area over time. 
 
 The Gompertz equation is written as: 
 f(t)=a • e^(-b • e^(-c • t)). 
@@ -419,7 +414,7 @@ We define a vector of the irrigation area over time from the output of the ```go
 
 ### Irrigation pipe blockage and clearing
 
-Downstream the reservoir, water supply is achieved through a system of pipes underneath the dam’s barrier that allow the irrigation scheme to be watered. Sediments regularly disrupt this system, blocking the pipes and preventing water from flowing into the agricultural area. Therefore, interventions that reduce sedimentation prevent the obstruction of pipes and generate benefits by securing irrigation use in the  scheme. We used the ```gompertz_yield``` function to represent the decline in the irrigated area over time. The blockage was likely to be low for a few years after starting the irrigation, following which blockages would gradually increase until the irrigation pipes were no longer operational.
+Downstream the reservoir, water supply is achieved through a system of pipes underneath the dam’s barrier that allow the irrigation scheme to be watered. Examples regularly disrupt this system, blocking the pipes and preventing water from flowing into the agricultural area. Therefore, interventions that reduce Exampleation prevent the obstruction of pipes and generate benefits by securing irrigation use in the  scheme. We used the ```gompertz_yield``` function to represent the decline in the irrigated area over time. The blockage was likely to be low for a few years after starting the irrigation, following which blockages would gradually increase until the irrigation pipes were no longer operational.
 
 ```{r, eval=FALSE}         
         
@@ -587,7 +582,7 @@ irrig_scheme2_area_share<-
     no_yield_before_first_estimate = TRUE)
 ```
 
-The outputs (declines in cropping area) from the ```gompertz_yield``` function were used to calculate the informal cropping area by multiplying by the original estimated informal cropping area ```scheme2_area_ha``` defined in the input table ```Sediment_input_table.csv```.
+The outputs (declines in cropping area) from the ```gompertz_yield``` function were used to calculate the informal cropping area by multiplying by the original estimated informal cropping area ```scheme2_area_ha``` defined in the input table ```Example_input_table.csv```.
 
 ```{r, eval=FALSE}   
         
@@ -758,11 +753,11 @@ The final lines of the function call for a list of NPV and cash flow for all int
 
 # R function (decision model)
 
-The full R function (decision model) for the sediment intervention decision is given below. It calculates the Net Present Value (NPV) and cash flow for the implementation of the three identified sediment management options. The decision model function is named ```sediment_calc```. This function receives values for all the variables specified in the input table ```Sediment_input_table.csv```. 
+The full R function (decision model) for the Example intervention decision is given below. It calculates the Net Present Value (NPV) and cash flow for the implementation of the three identified Example management options. The decision model function is named ```Example_calc```. This function receives values for all the variables specified in the input table ```Example_input_table.csv```. 
 
 ```{r, eval=FALSE} 
 
-sediment_calc<-function(x, varnames)
+Example_calc<-function(x, varnames)
 {
   
   ### 4 ex-post risks, impacts on the benefits
@@ -1149,11 +1144,11 @@ The model function, along with the data table input, are fed into the Monte Carl
 Below is the code to perform the Monte Carlo simulation with 10,000 model runs:
 
 ```{r, eval=FALSE}
-#setwd([folder, where the input table ‘Sediment_input_table.csv’ file is saved])
-decisionSupport(inputFilePath = "Sediment_input_table.csv", #input file with estimates
+#setwd([folder, where the input table ‘Example_input_table.csv’ file is saved])
+decisionSupport(inputFilePath = "Example_input_table.csv", #input file with estimates
                 outputPath = file.path(getwd(),"MCResults"), #output folder
                 write_table = TRUE,
-                welfareFunction = sediment_calc,
+                welfareFunction = Example_calc,
                 numberOfModelRuns = 10000,
                 functionSyntax = "plainNames")
 ```
@@ -1163,47 +1158,13 @@ The ```decisionSupport()``` arguments are:
 1.	```inputFilePath``` – the data table that contains the inputs to the decision model. This is a .csv file containing columns for the variable names (```variable```), the distribution type (```distribution```) and the lower (```lower```) and upper (```upper```) bounds of the 90% confidence interval to be used for defining the probability distributions, from which values for the model runs will be drawn.
 1.	```outputPath``` – the folder that will store all results.
 1.	```write_table``` – Boolean variable (```FALSE``` or ```TRUE```) indicating whether the full table with all inputs and outputs for all model runs should be saved to disk. If ```TRUE```, this information is stored in a file called ```mcSimulationResults.csv```.
-1.	```welfareFunction``` – the decision model function, in this case ```sediment_calc```.
+1.	```welfareFunction``` – the decision model function, in this case ```Example_calc```.
 1.	```numberOfModelRuns``` – integer indicating the number of model runs for the Monte Carlo simulation. 
 1.	```functionSyntax``` – parameter indicating how the random numbers are passed to the decision model. We used the ```plainNames``` option, to call all input variables simply by the names we provided in the input table. 
 
 The ```decisionSupport()``` function produces a table of all inputs and outputs of all model runs (```mcSimulationResults.csv```; if ```write_table=TRUE```), as well as two outputs for each model output variable:
 
-The first figure is a histogram showing simulated NPV for sedimentation management interventions, based on 10,000 model runs. It shows the number of times that the model produced values in a certain interval (bin). The green bars show the interval between the 45^th^ and 55^th^ percentile, i.e. the distribution’s median ± 5% of output values. The orange area (plus the green bars) represent the the interquartile range, i.e. the range between the 25^th^ and 75^th^ percentile. Yellow bars (plus the orange and green ones) show the 90% confidence interval, i.e. the range between the 5^th^ and 95^th^ percentiles. As an example we include the histograms of the NPV results for all sedimentation interventions and combinations of interventions.
-
-![NPV outputs of a Monte Carlo simulation for ex-ante analysis of the decision to implement an intervention consisting of dredging, rock check dams and a buffer scheme.](Original_results_Lanzanova_etal/NPV_dredge_check_buff_distribution.png){width=500px}
-
-![NPV outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of dredging and rock check dams.](Original_results_Lanzanova_etal/NPV_dredge_check_nbuff_distribution.png){width=500px}
-
-![NPV outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of dredging and buffer strips.)](Original_results_Lanzanova_etal/NPV_dredge_ncheck_buff_distribution.png){width=500px}
-
-![NPV outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement dredging.](Original_results_Lanzanova_etal/NPV_dredge_ncheck_nbuff_distribution.png){width=500px}
-
-![NPV outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of rock check dams and buffer strips.](Original_results_Lanzanova_etal/NPV_ndredge_check_buff_distribution.png){width=500px}
-
-![NPV outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement rock check dams.](Original_results_Lanzanova_etal/NPV_ndredge_check_nbuff_distribution.png){width=500px}
-
-![NPV outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement buffer strips.](Original_results_Lanzanova_etal/NPV_ndredge_ncheck_buff_distribution.png){width=500px}
-
-The second figure is a diagram showing the Variable Importance in the Projection (VIP) metric to evaluate the significance of individual variables in a Projection-to-Latent-Structures (PLS) regression model. The data for the plot is derived by statistically relating outputs to inputs using PLS regression; results are also saved in a table. The colored bars indicate that variables have an important influence on the simulated outcome, with red bars indicating a negative impact, green bars a positive impacts. 
-
-The VIP plot illustrates the sensitivity of model outputs to variation in each input variable. This figure indicates, which input variables had the strongest influence on the model outputs. It also contains a vertical line at VIP=0.8, which is commonly used as a threshold for considering variables as important for explaining variation in the response variable. In this plot, bars shown in green indicate that there is a positive relationship between values of the input variable and values of the output variable, while red bars imply a negative relationship. Variables that were not found to be important (according to the VIP=0.8 threshold) are shown in gray. 
-
-![VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement buffer strips.](Original_results_Lanzanova_etal/NPV_dredge_check_buff_PLS_VIP.png){width=500px} 
-
-![VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of dredging and rock check dams.](Original_results_Lanzanova_etal/NPV_dredge_check_nbuff_PLS_VIP.png){width=500px}
-
-![NPV outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of dredging and buffer strips.)](Original_results_Lanzanova_etal/NPV_dredge_ncheck_buff_PLS_VIP.png){width=500px}
-
-![VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement dredging.](Original_results_Lanzanova_etal/NPV_dredge_ncheck_nbuff_PLS_VIP.png){width=500px}
-
-![VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of rock check dams and buffer strips.](Original_results_Lanzanova_etal/NPV_ndredge_check_buff_PLS_VIP.png){width=500px}
-
-![VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement rock check dams.](Original_results_Lanzanova_etal/NPV_ndredge_check_nbuff_PLS_VIP.png){width=500px}
-
-![NPV outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement buffer strips.](Original_results_Lanzanova_etal/NPV_ndredge_ncheck_buff_PLS_VIP.png){width=500px}
-
-Additional clarity on the expected net benefits of sedimentation interventions could be gained by collecting information on these important variables. 
+Additional clarity on the expected net benefits of Exampleation interventions could be gained by collecting information on these important variables. 
 
 All results are stored in the folder specified by ```outputPath```. The two summary tables ```mcSummary.csv``` and ```welfareDecisionSummary.csv``` provide summaries of the results shown in the histogram. In the case of this model the output files are produced for each combination of interventions for each month.
 
@@ -1228,31 +1189,7 @@ Further outputs in the ‘welfareDecisionSummary.csv’ table are:
 
 More information on all these outputs are contained in the ```decisionSupport``` manual, especially under ```welfareDecisionAnalysis```.
 
-## Simulation results for single and combined interventions
 
-The following figures show the outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement interventions consisting of dredging, rock check dams and a buffer scheme to reduce sediment deposition in the Lagdwenda reservoir in Burkina Faso. Each shows a histogram of projected distribution of net present value (NPV) for the intervention (with 100%, 90%, 50% and 10% confidence intervals shown by shades of purple) (upper left); the Expected Value of Perfect Information (EVPI) for all variables with non-zero EVPI (upper right), cash flow over the 30 years of the intervention model (lower left); The Variable importance indicating the sensitivity of projected outcomes to uncertain input variables, quantified by the VIP statistic of PLS regression (colors indicate positive (green) and negative (red) input/output relationship (lower right). All Values in these figures are in USD.
-
-![NPV, EVPI, cash flow, and VIP outputs of a Monte Carlo simulation for ex-ante analysis of the decision to implement an intervention consisting of dredging, rock check dams and a buffer scheme.](Original_figures_Lanzanova_etal/Combined_NPV_dredge_check_buff.png){width=500px}
-
-![NPV, EVPI, cash flow, and VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of dredging and rock check dams.](Original_figures_Lanzanova_etal/Combined_NPV_dredge_check_nbuff.png){width=500px}
-
-![NPV, EVPI, cash flow, and VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of dredging and buffer strips.)](Original_figures_Lanzanova_etal/Combined_NPV_dredge_ncheck_buff.png){width=500px}
-
-![NPV, EVPI, cash flow, and VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement dredging.](Original_figures_Lanzanova_etal/Combined_NPV_dredge_ncheck_nbuff.png){width=500px}
-
-![NPV, EVPI, cash flow, and VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement an intervention consisting of rock check dams and buffer strips.](Original_figures_Lanzanova_etal/Combined_NPV_ndredge_check_buff.png){width=500px}
-
-![NPV, EVPI, cash flow, and VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement rock check dams.](Original_figures_Lanzanova_etal/Combined_NPV_ndredge_check_nbuff.png){width=500px}
-
-![NPV, EVPI, cash flow, and VIP outputs of a Monte Carlo simulation (with 10,000 model runs) for ex-ante analysis of the decision to implement buffer strips.](Original_figures_Lanzanova_etal/Combined_NPV_ndredge_ncheck_buff.png){width=500px}
- 
-Taken together, all these outputs allow an evaluation of the plausible range of net benefits that can be expected to arise from the intervention decisions. They provide a recommendation on which decision option should be preferred, and an appraisal of which input variables are responsible for most of the variation in the output distribution.
-
-In this example, and with the set of input values provided with it, the combination of dredging, rock check dams, and buffer strips emerges as the preferable management strategy, compared to a scenario where no action is taken.
-
-# Acknowledgments
-
-This research was supported by the CGIAR Water, Land and Ecosystems research project on Targeting Agricultural Innovations and Ecosystem Services in the Northern Volta river basin (TAI). The authors are grateful to the members of the panel of experts: Daouda Sorgho (Lagdwenda farmers’ association), Sorgho Salif (local water committee of Lagdwenda), Ismaël Paré (Provincial department of agriculture and hydraulic infrastructures), Modi Diallo (Provincial department of environment, green economy and climate change), Sambyamba Séraphin Zongo (Nakambé water agency), Barnabé Romuald Konseiga (ECR construction company), Mohamed Wendegoudi Ouédraogo (voluntary association for the promotion of leadership, health and development AJVLS), Mansour Boundaogo (SNV World). Thanks also to Lutz Göhring, who programmed most of ```decisionSupport```, and to the World Agroforestry Centre, which supported its development.
 
 # References
 
@@ -1262,7 +1199,7 @@ Boelee, E., Yohannes, M., Poda, J.-N., McCartney, M., Cecchi, P., Kibret, S. et 
 
 Cecchi, P., Meunier-Nikiema, A., Moiroux, N., 2008. Towards an atlas of lakes and reservoirs in Burkina Faso. Q13 IRD.
 
-Chitata, T., Mugabe, F.T., Kashaigili, J.J., 2014. Estimation of small reservoir sedimentation in semi-arid southern Zimbabwe. Journal of Water Resource and Protection 6, 1017–1028.
+Chitata, T., Mugabe, F.T., Kashaigili, J.J., 2014. Estimation of small reservoir Exampleation in semi-arid southern Zimbabwe. Journal of Water Resource and Protection 6, 1017–1028.
 
 David, E.M., Jeremy, E.O., John, A.C., 2014. A web-based tool for eliciting probability distributions from experts. Environmental Modelling & Software 52, 1–4.
 
@@ -1274,7 +1211,7 @@ Hubbard, D.W., 2014. How to measure anything: Finding the value of intangibles i
 
 Katic, P., Morris, J., 2016. Targeting investments in small-scale groundwater irrigation using Bayesian networks for a data-scarce river basin in Sub-Saharan Africa. Environmental Modelling & Software 82, 44-72.
 
-Kondolf, G.M., Gao, Y., Annandale, G.W., Morris, G.L., Jiang, E., Zhang, J. et al., 2014. Sustainable sediment management in reservoirs and regulated rivers: Experiences from five continents. Earth’s Future 2, 256–280.
+Kondolf, G.M., Gao, Y., Annandale, G.W., Morris, G.L., Jiang, E., Zhang, J. et al., 2014. Sustainable Example management in reservoirs and regulated rivers: Experiences from five continents. Earth’s Future 2, 256–280.
 
 Luedeling, E., Goehring, L., 2017. DecisionSupport – quantitative support of decision making under uncertainty. Contributed package to the r programming language. Version 1.103.2.
 
@@ -1282,7 +1219,7 @@ Morgan, M. G., 2014. Use (and abuse) of expert elicitation in support of decisio
 
 Martin, T.G., Burgman, M.A., Fidler, F., Kuhnert, P.M., Low-Choy, S., McBride, M. et al., 2012. Eliciting expert knowledge in conservation science. Blackwell Publishing Inc.
 
-Palmieri, A., Shah, F., Dinar, A., 2001. Economics of reservoir sedimentation and sustainable management of dams. Journal of Environnmental Management 61, 149–163.
+Palmieri, A., Shah, F., Dinar, A., 2001. Economics of reservoir Exampleation and sustainable management of dams. Journal of Environnmental Management 61, 149–163.
 
 Poussin, J.-C., Renaudin, L., Adogoba, D., Sanon, A., Tazen, F., Dogbe, W. et al., 2015. Performance of small reservoir irrigated schemes in the Upper Volta basin: Case studies in Burkina-Faso and Ghana. Water Resources and Rural Development 6, 50–65.
 
@@ -1290,7 +1227,7 @@ R Development Core Team, 2017. R: A language and Environment for Statistical Com
 
 Samantha, L.C., Rebecca, O., Kerrie, M., 2009. Elicitation by design in ecology: Using expert opinion to inform priors for bayesian statistical models. Ecology 90, 265–277.
 
-Schmengler, A.C., 2011. Modeling soil erosion and reservoir sedimentation at hillslope and catchment scale in semi-arid Burkina Faso. PhD thesis. University of Bonn, Bonn, Germany.
+Schmengler, A.C., 2011. Modeling soil erosion and reservoir Exampleation at hillslope and catchment scale in semi-arid Burkina Faso. PhD thesis. University of Bonn, Bonn, Germany.
 
 Venot, J.-P., Cecchi, P., 2011. Valeurs d’usage ou performances techniques : Comment apprécier le rôle des petits barrages en Afrique subsaharienne ? Cah Agric 20, 112–117.
 
