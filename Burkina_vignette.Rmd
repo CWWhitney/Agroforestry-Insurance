@@ -63,7 +63,7 @@ The identified ex-post and ex-ante risks were all assigned probability ranges fr
 
 ### Chance events and ex-ante risks
 
-We used the ```chance_event()``` function for simulation of ex-ante risks as impacts on the implementation of the three interventions.
+We used the ```chance_event()``` function for simulation of ex-ante risks as impacts on the implementation of three interventions.
 
 Probability distributions for the chance variables ```dredge_NonPopInvolv```, ```dredge_NonDonorsInvolv``` are defined in the input table ```Example_input_table.csv```.
 
@@ -414,7 +414,7 @@ We define a vector of the irrigation area over time from the output of the ```go
 
 ### Irrigation pipe blockage and clearing
 
-Downstream the reservoir, water supply is achieved through a system of pipes underneath the dam’s barrier that allow the irrigation scheme to be watered. Examples regularly disrupt this system, blocking the pipes and preventing water from flowing into the agricultural area. Therefore, interventions that reduce Exampleation prevent the obstruction of pipes and generate benefits by securing irrigation use in the  scheme. We used the ```gompertz_yield``` function to represent the decline in the irrigated area over time. The blockage was likely to be low for a few years after starting the irrigation, following which blockages would gradually increase until the irrigation pipes were no longer operational.
+Downstream the reservoir, water supply is achieved through a system of pipes underneath the dam’s barrier that allow the irrigation scheme to be watered. Examples regularly disrupt this system, blocking the pipes and preventing water from flowing into the agricultural area. Therefore, interventions that reduce sedimentation prevent the obstruction of pipes and generate benefits by securing irrigation use in the  scheme. We used the ```gompertz_yield``` function to represent the decline in the irrigated area over time. The blockage was likely to be low for a few years after starting the irrigation, following which blockages would gradually increase until the irrigation pipes were no longer operational.
 
 ```{r, eval=FALSE}         
         
@@ -1164,7 +1164,7 @@ The ```decisionSupport()``` arguments are:
 
 The ```decisionSupport()``` function produces a table of all inputs and outputs of all model runs (```mcSimulationResults.csv```; if ```write_table=TRUE```), as well as two outputs for each model output variable:
 
-Additional clarity on the expected net benefits of Exampleation interventions could be gained by collecting information on these important variables. 
+Additional clarity on the expected net benefits of sedimentation interventions could be gained by collecting information on these important variables. 
 
 All results are stored in the folder specified by ```outputPath```. The two summary tables ```mcSummary.csv``` and ```welfareDecisionSummary.csv``` provide summaries of the results shown in the histogram. In the case of this model the output files are produced for each combination of interventions for each month.
 
@@ -1197,7 +1197,7 @@ Boelee, E., Yohannes, M., Poda, J.-N., McCartney, M., Cecchi, P., Kibret, S. et 
 
 Cecchi, P., Meunier-Nikiema, A., Moiroux, N., 2008. Towards an atlas of lakes and reservoirs in Burkina Faso. Q13 IRD.
 
-Chitata, T., Mugabe, F.T., Kashaigili, J.J., 2014. Estimation of small reservoir Exampleation in semi-arid southern Zimbabwe. Journal of Water Resource and Protection 6, 1017–1028.
+Chitata, T., Mugabe, F.T., Kashaigili, J.J., 2014. Estimation of small reservoir sedimentation in semi-arid southern Zimbabwe. Journal of Water Resource and Protection 6, 1017–1028.
 
 David, E.M., Jeremy, E.O., John, A.C., 2014. A web-based tool for eliciting probability distributions from experts. Environmental Modelling & Software 52, 1–4.
 
@@ -1209,7 +1209,7 @@ Hubbard, D.W., 2014. How to measure anything: Finding the value of intangibles i
 
 Katic, P., Morris, J., 2016. Targeting investments in small-scale groundwater irrigation using Bayesian networks for a data-scarce river basin in Sub-Saharan Africa. Environmental Modelling & Software 82, 44-72.
 
-Kondolf, G.M., Gao, Y., Annandale, G.W., Morris, G.L., Jiang, E., Zhang, J. et al., 2014. Sustainable Example management in reservoirs and regulated rivers: Experiences from five continents. Earth’s Future 2, 256–280.
+Kondolf, G.M., Gao, Y., Annandale, G.W., Morris, G.L., Jiang, E., Zhang, J. et al., 2014. Sustainable sediment management in reservoirs and regulated rivers: Experiences from five continents. Earth’s Future 2, 256–280.
 
 Luedeling, E., Goehring, L., 2017. DecisionSupport – quantitative support of decision making under uncertainty. Contributed package to the r programming language. Version 1.103.2.
 
@@ -1217,7 +1217,7 @@ Morgan, M. G., 2014. Use (and abuse) of expert elicitation in support of decisio
 
 Martin, T.G., Burgman, M.A., Fidler, F., Kuhnert, P.M., Low-Choy, S., McBride, M. et al., 2012. Eliciting expert knowledge in conservation science. Blackwell Publishing Inc.
 
-Palmieri, A., Shah, F., Dinar, A., 2001. Economics of reservoir Exampleation and sustainable management of dams. Journal of Environnmental Management 61, 149–163.
+Palmieri, A., Shah, F., Dinar, A., 2001. Economics of reservoir sedimentation and sustainable management of dams. Journal of Environnmental Management 61, 149–163.
 
 Poussin, J.-C., Renaudin, L., Adogoba, D., Sanon, A., Tazen, F., Dogbe, W. et al., 2015. Performance of small reservoir irrigated schemes in the Upper Volta basin: Case studies in Burkina-Faso and Ghana. Water Resources and Rural Development 6, 50–65.
 
@@ -1225,7 +1225,7 @@ R Development Core Team, 2017. R: A language and Environment for Statistical Com
 
 Samantha, L.C., Rebecca, O., Kerrie, M., 2009. Elicitation by design in ecology: Using expert opinion to inform priors for bayesian statistical models. Ecology 90, 265–277.
 
-Schmengler, A.C., 2011. Modeling soil erosion and reservoir Exampleation at hillslope and catchment scale in semi-arid Burkina Faso. PhD thesis. University of Bonn, Bonn, Germany.
+Schmengler, A.C., 2011. Modeling soil erosion and reservoir sedimentation at hillslope and catchment scale in semi-arid Burkina Faso. PhD thesis. University of Bonn, Bonn, Germany.
 
 Venot, J.-P., Cecchi, P., 2011. Valeurs d’usage ou performances techniques : Comment apprécier le rôle des petits barrages en Afrique subsaharienne ? Cah Agric 20, 112–117.
 
