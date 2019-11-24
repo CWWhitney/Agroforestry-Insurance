@@ -1189,8 +1189,6 @@ Further outputs in the ‘welfareDecisionSummary.csv’ table are:
 
 More information on all these outputs are contained in the ```decisionSupport``` manual, especially under ```welfareDecisionAnalysis```.
 
-
-
 # References
 
 Bharati, L., Rodgers, C., Erdenberger, T., Plotnikova, M., Shumilov, S., Vlek, P. et al., 2008. Integration of economic and hydrologic models: Exploring conjunctive irrigation water use strategies in the Volta basin. Agricultural Water Management 95, 925–936.
