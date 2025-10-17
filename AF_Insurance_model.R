@@ -51,9 +51,9 @@ agroforestry_insurance_function <- function(x, varnames){
   )
   
   # Chance events for uptake - CORRECTED usage
-  uptake_probability_index <- uptake_insurance * uptake_drivers
-  uptake_probability_traditional <- uptake_insurance * uptake_drivers * 0.8
-  uptake_probability_hybrid <- uptake_insurance * uptake_drivers * 0.9
+  uptake_probability_index_adj <- pmin(pmax(uptake_probability_index / 5, 0), 1)
+  uptake_probability_traditional_adj <- pmin(pmax(uptake_probability_traditional / 5, 0), 1)
+  uptake_probability_hybrid_adj <- pmin(pmax(uptake_probability_hybrid / 5, 0), 1)
   
   # Create time series of uptake events
   uptake_index <- chance_event(uptake_probability_index, value_if = 1, value_if_not = 0, n = n_years)
