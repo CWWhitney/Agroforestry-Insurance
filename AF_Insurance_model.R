@@ -51,10 +51,11 @@ agroforestry_insurance_function <- function(x, varnames){
     cultural_acceptance
   )
   
-  # Chance events for uptake - CORRECTED usage
-  uptake_probability_index_adj <- pmin(pmax(uptake_probability_index / 5, 0), 1)
-  uptake_probability_traditional_adj <- pmin(pmax(uptake_probability_traditional / 5, 0), 1)
-  uptake_probability_hybrid_adj <- pmin(pmax(uptake_probability_hybrid / 5, 0), 1)
+  # Chance events for uptake 
+  uptake_probability_index <- pmin(pmax(uptake_insurance * uptake_drivers / 25, 0), 1)
+  uptake_probability_traditional <- pmin(pmax(uptake_insurance * uptake_drivers * 0.8 / 25, 0), 1)
+  uptake_probability_hybrid <- pmin(pmax(uptake_insurance * uptake_drivers * 0.9 / 25, 0), 1)
+  
   
   # Create time series of uptake events
   uptake_index <- chance_event(uptake_probability_index_adj, value_if = 1, value_if_not = 0, n = n_years)
