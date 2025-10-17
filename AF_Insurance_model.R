@@ -31,9 +31,9 @@ agroforestry_insurance_function <- function(x, varnames){
     (1 - risk_mitigating_practices * 0.3) # Risk reduction from good practices
   
   # Final premium calculations
-  premium_index <- base_premium_index * risk_adjustment_factor
-  premium_traditional <- base_premium_traditional * risk_adjustment_factor
-  premium_hybrid <- base_premium_hybrid * risk_adjustment_factor
+  premium_index <- base_premium_index_adj * risk_adjustment_factor
+  premium_traditional <- base_premium_traditional_adj * risk_adjustment_factor
+  premium_hybrid <- base_premium_hybrid_adj * risk_adjustment_factor
   
   # Subsidy calculations
   subsidy_level <- vv(subsidized, var_CV, n_years)
