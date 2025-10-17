@@ -1,0 +1,268 @@
+---
+title: "Holistic Model Building: Supporting Decisions for Risks in Agroforestry Investment"
+subtitle: "The 6th World Congress on Agroforestry 2025"
+author: "Denise Margaret S. Matias¹, Cory W. Whitney²"
+institute: "¹Eberswalde University, Germany,<br> ²University of Bonn, Germany"
+date: "Kigali, Rwanda | 20-24 October 2025"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+
+# The Challenge: Complexity & Risk in Agroforestry
+
+.pull-left[
+### **Unique Risks in Agroforestry**
+
+- **System Complexity**: Multiple species, longer time horizons
+- **Farmer Burden**: New costs and management risks  
+- **Climate Vulnerability**: Compounded by climate variability in tropics
+- **Limited Tools**: Poor access to risk management instruments
+]
+
+.pull-right[
+### **The Insurance Gap**
+
+**Key Challenges:**
+- 🎯 Risk Perception Gaps
+- 📊 Limited Impact Data  
+- 🔄 Complex Modeling
+- 🌍 Cultural Barriers
+
+**Critical Question**: Can insurance enhance sustainability of agroforestry investments?
+]
+
+---
+
+# Our Transdisciplinary Approach
+
+.pull-left[
+### **Methodological Framework**
+
+1. **Scoping Review**
+   - Literature analysis
+   - Risk assessment frameworks  
+   - Insurance mechanisms
+
+2. **Participatory Workshops**
+   - Copenhagen, Bonn, Philippines
+   - Indigenous communities
+   - Multi-stakeholder engagement
+
+]
+
+.pull-right[
+### **Stakeholder Engagement**
+
+**Participant Groups:**
+- Indigenous Communities → Local Knowledge
+- Researchers → Scientific Models  
+- Policy Makers → Policy Design
+- Technical Experts → Implementation
+
+**Tools Used**: Structured discussions, influence diagramming, knowledge integration
+![](figures/icon_influence_diagram.png)
+]
+
+---
+# Influence Diagram - Insurance Impacts
+![](figures/full_pathway.png)
+---
+
+# Key Findings: Risk Perception & Reality
+
+.pull-left[
+### **The Perception Gap**
+
+- **Significant divergence** between actual and perceived risks
+- Risk perception shaped by:
+  - Socioeconomic factors
+  - Cultural context  
+  - Environmental experience
+- Influences insurance adoption decisions
+]
+
+.pull-right[
+### **Workshop Insights**
+
+**Risk Dimensions:**
+- **Objective Risks**: Climate hazards, market volatility
+- **Perceived Risks**: Cultural beliefs, past experiences  
+- **Insurance Impact**: Mediated by perception gaps
+
+**Critical Insight**: Insurance design must account for both objective and perceived risks
+]
+
+---
+
+# Modeling Approach: From Concept to Simulation
+
+.pull-left[
+### **Conceptual Model Development**
+
+- Analyzes interplay between:
+  - Objective risks (climate, markets)
+  - Perceived risks (farmer perspectives)
+- Identifies decision pathways
+- Integrates local and scientific knowledge
+]
+
+.pull-right[
+### **Digital Implementation**
+
+**Model Specifications:**
+- Simulation Type → Monte Carlo
+- Iterations → 10,000
+- Analysis Method → Value of Information  
+- Output → Opportunity costs, scenarios
+
+**Focus**: Assess insurance scenarios and their impacts on agroforestry sustainability
+]
+
+---
+
+# Results: Insurance Impact on Resilience
+
+.pull-left[
+### **Climate Shock Resilience**
+
+- **Insured systems**: Higher resilience to climate shocks
+- **Reduced conversion**: Lower likelihood of switching to monocultures
+- **Economic stability**: Better risk management capabilities
+]
+
+.pull-right[
+### **Comparative Analysis**
+
+**System Performance:**
+- Agroforestry + Insurance → High resilience, High biodiversity
+- Agroforestry Only → Medium resilience, High biodiversity  
+- Monoculture → Low resilience, Low biodiversity
+
+**Key Finding**: Insurance coverage correlates with sustained agroforestry practices
+]
+
+---
+
+# Indigenous Knowledge & Cultural Dimensions
+
+.pull-left[
+### **Traditional Wisdom**
+
+- **Cultural practices** provide risk adaptation strategies
+- **Local knowledge** informs understanding of environmental risks
+- **Community-based** approaches to risk management
+]
+
+.pull-right[
+### **Integration Imperative**
+
+**Traditional Elements:**
+- Cultural Practices → Maintain identity
+- Traditional Knowledge → Context-specific solutions  
+- Community Governance → Participatory design
+- Local Risk Assessment → Accurate risk mapping
+
+**Critical Insight**: Successful insurance requires blending traditional and contemporary approaches
+]
+
+---
+
+# Biodiversity & Economic Synergies
+
+.pull-left[
+### **Conservation Incentives**
+
+- Insurance reduces economic vulnerability
+- Enables long-term biodiversity investments
+- Supports complex, multi-species systems
+- Promotes ecological resilience
+]
+
+.pull-right[
+### **Economic-Biodiversity Links**
+
+**Insurance Mechanisms:**
+- Risk Reduction → Enables biodiversity investments
+- Long-term Planning → Supports perennial systems  
+- Diversification Support → Encourages species richness
+- Ecosystem Services → Monetizes ecological benefits
+
+**Key Benefit**: Insurance can incentivize biodiversity conservation through economic stability
+]
+
+---
+
+# Implementation Framework & Policy Needs
+
+.pull-left[
+### **Participatory Design Process**
+
+- Co-development with farmers
+- Cultural sensitivity
+- Local context adaptation
+- Traditional knowledge integration
+]
+
+.pull-right[
+### **Policy Support Requirements**
+
+**Multi-level Approach:**
+- Local → Community engagement
+- National → Regulatory frameworks  
+- International → Climate finance access
+
+**Critical Success Factors:**
+- Tailored approaches for biodiversity-rich systems
+- Targeted policy support
+- Multi-stakeholder collaboration
+]
+
+---
+
+# Conclusions & Next Steps
+
+.pull-left[
+### **Key Contributions**
+
+1. **Holistic Model**: Integrates risk perception and objective analysis
+2. **Participatory Approach**: Bridges local and scientific knowledge
+3. **Decision Support**: Provides tools for insurance design
+4. **Sustainability Pathway**: Links insurance to biodiversity conservation
+]
+
+.pull-right[
+### **Future Directions**
+
+- Scale model to other regions
+- Develop pilot insurance products
+- Strengthen indigenous knowledge integration
+- Policy engagement for implementation
+
+**Data & Code Available:** https://zenodo.org/records/11051131
+]
+
+---
+
+class: center, middle, inverse
+
+# Thank You!
+
+### Questions?
+
+**Contact**: Denise Margaret S. Matias
+
+<br>
+
+**#WCA6 #Agroforestry2025 #RiskInsurance #SustainableInvestment**
+
+.center[
+*Bridging traditional wisdom and modern risk management for resilient agroforestry systems*
+]

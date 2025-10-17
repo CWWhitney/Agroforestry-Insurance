@@ -1,0 +1,95 @@
+---
+title: "Agroforestry Insurance Decision Support Model"
+author: "Cory Whitney"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    fig_caption: true
+bibliography: packages.bib
+link-citations: yes
+---
+
+# Decision Model for Agroforestry Insurance
+
+Decision Analysis (DA) can be used to support practical decisions in agroforestry insurance design under risk and uncertainty. It can generate robust and science-based decision support by integrating data and expert knowledge on insurance mechanisms and their impacts on agroforestry systems. We demonstrate DA model development techniques to support the difficult task of deciding which insurance schemes to implement, given the complex nature of agroforestry risks and farmer perceptions.
+
+The `decisionSupport()` function is part of the package `decisionSupport` in the R programming environment. This package was used for a Monte-Carlo-based selection of optimal insurance strategies.
+
+## Model Structure
+
+By coding a participatory conceptual model as a Monte Carlo simulation using the `decisionSupport()` function, we were able to offer decision makers probable outcomes in terms of Net Present Value (NPV) and assess the resilience benefits of different insurance schemes for agroforestry systems.
+
+![Participatory conceptual model of agroforestry insurance](figures/full_pathway.png)
+
+## Input Table
+
+The input table `Agroforestry_insurance_input_table.csv` contains the variables used in the model with distributions described by a 90% confidence interval, as well as the shape of the distribution.
+
+```{r echo=FALSE}
+library(knitr)
+library(kableExtra)
+options(scipen=999)
+options(knitr.kable.NA = " ")
+options(knitr.table.format = "html")
+knitr::kable(read.csv("data/Agroforestry_insurance_input_table.csv"), 
+             caption = "Table of expert estimates for agroforestry insurance model variables")
+```
+
+## Key Risk Categories in Agroforestry
+
+### Production Risks
+- Climate variability and extreme weather events
+- Pest and disease outbreaks
+- Yield fluctuations across multiple species
+- Tree-crop interactions and competition
+- Long-term tree establishment risks
+
+### Market Risks
+- Price volatility for multiple products
+- Market access limitations
+- Input cost fluctuations
+- Value chain disruptions
+
+### Institutional Risks
+- Policy changes affecting agroforestry
+- Land tenure security
+- Access to credit and insurance markets
+
+## Insurance Scheme Options
+
+### Index-Based Insurance
+- Weather index insurance
+- Yield index insurance
+- Area-based yield indices
+- Satellite vegetation indices
+
+### Traditional Insurance
+- Multi-peril crop insurance
+- Named-peril insurance
+- Revenue protection insurance
+- Whole-farm revenue insurance
+
+## Model Implementation
+
+The decision model evaluates the net benefits of different insurance schemes for agroforestry systems, considering:
+
+1. Premium costs and administrative expenses
+2. Payout probabilities and amounts
+3. Risk reduction benefits
+4. Behavioral impacts on farm management
+5. Systemic risk factors
+
+## Results and Decision Support
+
+The model provides probabilistic outcomes for each insurance scheme, allowing decision-makers to:
+
+- Compare expected net benefits across options
+- Assess risk-return tradeoffs
+- Identify critical uncertainties
+- Develop robust insurance strategies
+
+## Conclusion
+
+This decision support model provides a structured approach to evaluating agroforestry insurance schemes, helping to bridge the gap between traditional risk management and the unique challenges of diversified agroforestry systems.
