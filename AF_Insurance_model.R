@@ -62,8 +62,9 @@ agroforestry_insurance_function <- function(x, varnames){
  
    # Risk Events and Payouts ####
   
-  # Hazard occurrence - CORRECTED usage
-  hazard_occurrence <- chance_event(hazard, value_if = 1, value_if_not = 0, n = n_years)
+  # Hazard occurrence 
+  hazard_probability_adj <- pmin(pmax(hazard / 5, 0), 1)
+  hazard_occurrence <- chance_event(hazard_probability_adj, value_if = 1, value_if_not = 0, n = n_years)
   
   # Damage calculation based on hazard and vulnerability
   damage_magnitude <- hazard_occurrence * vulnerability * exposure_risks
