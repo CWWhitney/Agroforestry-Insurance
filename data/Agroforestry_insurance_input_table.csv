@@ -2,6 +2,9 @@ variable,lower ,median,upper,distribution,label
 n_years,10,,10,const,Project timeline in years
 var_CV,5,,20,posnorm,Coefficient of variation for time series
 index_trigger_threshold,0.2,,0.4,tnorm_0_1,Damage level that triggers index insurance
+tree_value_per_ha,1000,,5000,posnorm,Value of trees per hectare
+crop_value_per_ha,500,,2000,posnorm,Value of crops per hectare
+af_system_size,0.5,,5,posnorm,Agroforestry system size in hectares
 max_payout_index,0.6,,0.9,tnorm_0_1,Maximum payout as percentage of loss for index insurance
 max_payout_traditional,0.7,,0.95,tnorm_0_1,Maximum payout as percentage of loss for traditional insurance
 claims_processing_rate,0.03,,0.08,tnorm_0_1,Administrative cost as percentage of payout
