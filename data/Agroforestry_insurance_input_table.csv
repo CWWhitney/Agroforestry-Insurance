@@ -1,4 +1,23 @@
 variable,lower ,median,upper,distribution,label
+n_years,10,,30,const,Project timeline in years
+var_CV,5,,20,posnorm,Coefficient of variation for time series
+index_trigger_threshold,0.2,,0.4,tnorm_0_1,Damage level that triggers index insurance
+max_payout_index,0.6,,0.9,tnorm_0_1,Maximum payout as percentage of loss for index insurance
+max_payout_traditional,0.7,,0.95,tnorm_0_1,Maximum payout as percentage of loss for traditional insurance
+claims_processing_rate,0.03,,0.08,tnorm_0_1,Administrative cost as percentage of payout
+farmer_discount_rate,3,,8,posnorm,Discount rate for farmer perspective (%)
+social_discount_rate,1,,5,posnorm,Discount rate for social perspective (%)
+base_premium_index,1,,5,posnorm,Base premium rate for index insurance (%)
+base_premium_traditional,3,,8,posnorm,Base premium rate for traditional insurance (%)
+base_premium_hybrid,2,,6,posnorm,Base premium rate for hybrid insurance (%)
+admin_costs_index,5000,,20000,posnorm,Annual admin costs for index insurance
+admin_costs_traditional,8000,,25000,posnorm,Annual admin costs for traditional insurance
+admin_costs_hybrid,6000,,18000,posnorm,Annual admin costs for hybrid insurance
+self_insurance_costs,2000,,8000,posnorm,Costs of self-insurance alternatives
+alternative_investment_returns,1000,,5000,posnorm,Returns from alternative investments
+risk_reduction_value,1000,,3000,posnorm,Value of risk reduction benefits
+management_improvement_value,500,,2500,posnorm,Value of improved management practices
+damage_assessment_accuracy,0.6,,0.95,tnorm_0_1,Accuracy of damage assessment
 participatory,1.00,,5.00,posnorm,Level of stakeholder involvement in insurance design
 neutral,1.00,,5.00,posnorm,Impartiality in decision-making processes
 farmers_understand_insurance,1.00,,5.00,posnorm,Farmer comprehension of insurance terms and benefits
