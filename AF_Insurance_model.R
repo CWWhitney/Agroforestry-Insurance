@@ -56,11 +56,11 @@ agroforestry_insurance_function <- function(x, varnames){
   uptake_probability_hybrid_adj <- pmin(pmax(uptake_probability_hybrid / 5, 0), 1)
   
   # Create time series of uptake events
-  uptake_index <- chance_event(uptake_probability_index, value_if = 1, value_if_not = 0, n = n_years)
-  uptake_traditional <- chance_event(uptake_probability_traditional, value_if = 1, value_if_not = 0, n = n_years)
-  uptake_hybrid <- chance_event(uptake_probability_hybrid, value_if = 1, value_if_not = 0, n = n_years)
-  
-  # Risk Events and Payouts ####
+  uptake_index <- chance_event(uptake_probability_index_adj, value_if = 1, value_if_not = 0, n = n_years)
+  uptake_traditional <- chance_event(uptake_probability_traditional_adj, value_if = 1, value_if_not = 0, n = n_years)
+  uptake_hybrid <- chance_event(uptake_probability_hybrid_adj, value_if = 1, value_if_not = 0, n = n_years)
+ 
+   # Risk Events and Payouts ####
   
   # Hazard occurrence - CORRECTED usage
   hazard_occurrence <- chance_event(hazard, value_if = 1, value_if_not = 0, n = n_years)
