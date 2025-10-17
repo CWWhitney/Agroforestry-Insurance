@@ -134,50 +134,18 @@ The model provides probabilistic outcomes for each insurance scheme, allowing de
 ```{r plot_dist_farmer, warning=FALSE, message=FALSE}
 # NPV is USD total net benefit over the project period 
 plot_distributions(mcSimulation_object = agroforestry_insurance_simulation_results, 
-                   vars = c("NPV_index_farmer", "NPV_traditional_farmer", "NPV_hybrid_farmer"),
-                   old_names = c("NPV_index_farmer", "NPV_traditional_farmer", "NPV_hybrid_farmer"),
+                   vars = c("NPV_index_total", 
+                            "NPV_traditional_total", 
+                            "NPV_hybrid_total"),
+                   old_names = c("NPV_index_total", 
+                            "NPV_traditional_total", 
+                            "NPV_hybrid_total"),
                    new_names = c("Index-based insurance NPV","Traditional insurance NPV", "Hybrid insurance NPV"),
                                     method = "boxplot", 
                                     base_size = 11, 
                                     x_axis_name = "Net Present Value (NPV) farmer perspective (USD over the project period)")
 
 ggsave("figures/NPV_Boxplots_Farmer.png", width = 15, height = 8, units = "cm")
-```
-```{r plot_dist_social, warning=FALSE, message=FALSE}
-# NPV is USD total net benefit over the project period 
-plot_distributions(mcSimulation_object = agroforestry_insurance_simulation_results, 
-                   vars = c("NPV_index_social", 
-                             "NPV_traditional_social",
-                             "NPV_hybrid_social"),
-                   old_names = c( "NPV_index_social", 
-                             "NPV_traditional_social",
-                             "NPV_hybrid_social"),
-                   new_names = c("Index-based insurance NPV",
-                                 "Traditional insurance NPV", 
-                                 "Hybrid insurance NPV"),
-                                    method = "boxplot", 
-                                    base_size = 11, 
-                                    x_axis_name = "Net Present Value (NPV) society perspective (USD over the project period)")
-
-ggsave("figures/NPV_Boxplots_Social.png", width = 15, height = 8, units = "cm")
-```
-```{r plot_dist_insurer, warning=FALSE, message=FALSE}
-# NPV is USD total net benefit over the project period 
-plot_distributions(mcSimulation_object = agroforestry_insurance_simulation_results, 
-                   vars = c("NPV_index_insurer", 
-                            "NPV_traditional_insurer", 
-                            "NPV_hybrid_insurer"),
-                   old_names = c("NPV_index_insurer", 
-                            "NPV_traditional_insurer", 
-                            "NPV_hybrid_insurer"),
-                   new_names = c("Index-based insurance NPV",
-                                 "Traditional insurance NPV", 
-                                 "Hybrid insurance NPV"),
-                                    method = "boxplot", 
-                                    base_size = 11, 
-                                    x_axis_name = "Net Present Value (NPV) insurer perspective (USD over the project period)")
-
-ggsave("figures/NPV_Boxplots_Insurer.png", width = 15, height = 8, units = "cm")
 ```
 
 ## Conclusion

@@ -1,6 +1,7 @@
 variable,lower ,median,upper,distribution,label
 n_years,10,,10,const,Project timeline in years
 var_CV,5,,20,posnorm,Coefficient of variation for time series
+index_trigger,0.3,,0.5,tnorm_0_1,Damage threshold for index insurance
 index_trigger_threshold,0.2,,0.4,tnorm_0_1,Damage level that triggers index insurance
 if_subsidy_available,0.2,,0.4,tnorm_0_1,Prob that a subsidy is available
 tree_value_per_ha,1000,,5000,posnorm,Value of trees per hectare
@@ -8,13 +9,14 @@ crop_value_per_ha,500,,2000,posnorm,Value of crops per hectare
 af_system_size,0.5,,5,posnorm,Agroforestry system size in hectares
 annual_income_per_ha,800,,2000,posnorm,Annual farm income (USD/ha/year)
 typhoon_probability,0.1,,0.3,tnorm_0_1,Annual probability of typhoon
-typhoon_loss_rate,0.2,,0.8,tnorm_0_1,Loss percentage when typhoon occurs
+typhoon_loss_rate,0.2,,0.8,tnorm_0_1,Loss percentage when hazard typhoon occurs
 savings_per_ha,100,,500,posnorm,Available savings (USD/ha)
 aid_expectation,0.01,,0.2,tnorm_0_1,Prob that aid is available after a typhoon
 aid_per_ha,50,,200,posnorm,Expected aid after typhoon (USD/ha)
 premium_index_per_ha,20,,80,posnorm,Index insurance premium (USD/ha/year)
 premium_traditional_per_ha,30,,100,posnorm,Traditional premium (USD/ha/year)
 premium_hybrid_per_ha,25,,90,posnorm,Hybrid premium (USD/ha/year)
+max_payout_per_ha,500,,2000,posnorm,Maximum insurance payout (USD/ha/event)
 subsidy_probability,0.3,,0.8,tnorm_0_1,Probability subsidy available
 subsidy_level,0.4,,0.7,tnorm_0_1,Subsidy percentage if available
 farm_size_ha,1,,5,posnorm,Farm size in hectares
@@ -24,11 +26,7 @@ hybrid_index_share, 0.3,,0.55,tnorm_0_1,Index payout for hybrid insurance scheme
 claims_processing_rate,0.03,,0.08,tnorm_0_1,Administrative cost as percentage of payout
 basis_risk,0.1,,0.4,tnorm_0_1,Risk that index doesn't match actual losses
 practice_risk_reduction,0.1,,0.4,tnorm_0_1,Risk reduction from good practices for risk-adjusted premiums
-farmer_discount_rate,3,,8,posnorm,Discount rate for farmer perspective (%)
-social_discount_rate,1,,5,posnorm,Discount rate for social perspective (%)
-base_premium_index,1,,5,posnorm,Base premium rate for index insurance (%)
-base_premium_traditional,3,,8,posnorm,Base premium rate for traditional insurance (%)
-base_premium_hybrid,2,,6,posnorm,Base premium rate for hybrid insurance (%)
+discount_rate,3,,8,posnorm,Discount rate for farmer perspective (%)
 admin_costs_index,5000,,20000,posnorm,Annual admin costs for index insurance
 admin_costs_traditional,8000,,25000,posnorm,Annual admin costs for traditional insurance
 admin_costs_hybrid,6000,,18000,posnorm,Annual admin costs for hybrid insurance
@@ -76,7 +74,7 @@ cohesiveness_community,1.00,,5.00,posnorm,Social unity and collective action
 cultural_importance,1.00,,5.00,posnorm,Cultural significance of insured assets
 risk_perception,1.00,,5.00,posnorm,Subjective assessment of risk severity
 vulnerability,1.00,,5.00,posnorm,Susceptibility to climate impacts
-number_insured,1.00,,5.00,posnorm,Total participants in insurance scheme
+area_insured,1.00,,5.00,posnorm,Total hectares farmland in insurance scheme
 exposure_risks,1.00,,5.00,posnorm,Degree of exposure to climate hazards
 underwriting,1.00,,5.00,posnorm,Risk assessment and premium setting
 risk_mitigating_practices,1.00,,5.00,posnorm,Adoption of risk reduction measures
