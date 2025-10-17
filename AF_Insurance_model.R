@@ -21,9 +21,10 @@ agroforestry_insurance_function <- function(x, varnames){
   # Three main insurance types: index-based, traditional, and hybrid
   
   # Premium Calculations
-  base_premium_index <- vv(rep(0.03, n_years), var_CV, n_years)
-  base_premium_traditional <- vv(rep(0.05, n_years), var_CV, n_years)
-  base_premium_hybrid <- vv(rep(0.04, n_years), var_CV, n_years)
+  # Premium Calculations
+  base_premium_index_adj <- vv(rep(base_premium_index/100, n_years), var_CV, n_years)
+  base_premium_traditional_adj <- vv(rep(base_premium_traditional/100, n_years), var_CV, n_years)
+  base_premium_hybrid_adj <- vv(rep(base_premium_hybrid/100, n_years), var_CV, n_years)
   
   # Risk-adjusted premiums based on farm characteristics
   risk_adjustment_factor <- vulnerability * exposure_risks * 
