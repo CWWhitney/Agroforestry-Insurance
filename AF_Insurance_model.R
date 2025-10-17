@@ -13,30 +13,108 @@ data <- read.csv("data/Agroforestry_insurance_input_table.csv")
 # Agroforestry Insurance Decision Model Function
 agroforestry_insurance_function <- function(x, varnames){
   
-  # Constant variables needed for the model
-  n_years <- 20  # Project timeline
-  var_CV <- 10   # Coefficient of variation for time series
-  
   # Insurance Scheme Selection
-  # Three main insurance types: index-based, traditional, and hybrid
+  # Four main insurance types: none, index-based, traditional, and hybrid
   
-  # Premium Calculations
-  # Premium Calculations
-  base_premium_index_adj <- vv(rep(base_premium_index/100, n_years), var_CV, n_years)
-  base_premium_traditional_adj <- vv(rep(base_premium_traditional/100, n_years), var_CV, n_years)
-  base_premium_hybrid_adj <- vv(rep(base_premium_hybrid/100, n_years), var_CV, n_years)
+  # BASELINE SCENARIO: No Insurance (Farmer's current reality)
+  baseline_annual_income <- vv(annual_income_per_ha, var_CV, n_years)  # USD/ha/year
   
+  # Typhoon impacts
+  typhoon_occurrence <- chance_event(typhoon_probability, value_if = 1, value_if_not = 0, n = n_years)
+  typhoon_loss_percentage <- vv(typhoon_loss_rate, var_CV, n_years)  # % of income lost
+  
+  # Post-typhoon coping mechanisms
+  savings_available <- vv(savings_per_ha, var_CV, n_years)  # USD/ha available
+  aid_received <- vv(aid_per_ha, var_CV, n_years) * typhoon_occurrence  # USD/ha/year
+  
+  # Baseline annual net income (USD/ha/year)
+  baseline_net_annual <- baseline_annual_income * 
+    (1 - typhoon_occurrence * typhoon_loss_percentage) + 
+    pmin(aid_received, typhoon_occurrence * typhoon_loss_percentage * baseline_annual_income)
+  
+  # Premium Index Adjustment Calculations
+  # Index ####
+  # Insurance Type: Index-based insurance
+  # Payout Trigger: Based on objective indices (weather data, satellite imagery, area yield)
+  base_premium_index_adj <- vv(rep(base_premium_index/100, 
+                                   n_years), var_CV, n_years)
+  # Traditional ####
+  # Insurance Type: Traditional indemnity insurance
+  # Payout Trigger: Based on actual assessed losses on the farm
+  base_premium_traditional_adj <- vv(rep(base_premium_traditional/100, 
+                                         n_years), var_CV, n_years)
+  # Hybrid ####
+  # Insurance Type: Combination of index and traditional elements
+  # Payout Trigger: Both index triggers and damage assessment
+   base_premium_hybrid_adj <- vv(rep(base_premium_hybrid/100, 
+                                    n_years), var_CV, n_years)
+  
+  # INSURANCE PREMIUMS (USD/ha/year)
+premium_index <- vv(premium_index_per_ha, var_CV, n_years)  # USD/ha/year
+premium_traditional <- vv(premium_traditional_per_ha, var_CV, n_years)
+premium_hybrid <- vv(premium_hybrid_per_ha, var_CV, n_years)
+
+# Subsidies
+subsidy_available <- chance_event(subsidy_probability, value_if = 1, value_if_not = 0, n = n_years)
+subsidy_rate <- vv(subsidy_level, var_CV, n_years)  # % of premium
+
+farmer_pays_index <- premium_index * (1 - subsidy_rate * subsidy_available)
+farmer_pays_traditional <- premium_traditional * (1 - subsidy_rate * subsidy_available)
+farmer_pays_hybrid <- premium_hybrid * (1 - subsidy_rate * subsidy_available)
+
+# INSURANCE PAYOUTS (USD/ha/year)
+# Index insurance payout
+index_payout <- ifelse(
+  typhoon_occurrence & (typhoon_loss_percentage > index_trigger_threshold),
+  typhoon_loss_percentage * baseline_annual_income * max_payout_index * (1 - basis_risk),
+  0
+)
+
+# Traditional insurance payout  
+traditional_payout <- ifelse(
+  typhoon_occurrence,
+  typhoon_loss_percentage * baseline_annual_income * max_payout_traditional * damage_assessment_accuracy,
+  0
+)
+
+# Hybrid insurance payout
+hybrid_payout <- (index_payout * hybrid_index_share) + (traditional_payout * (1 - hybrid_index_share))
+
+# INSURED ANNUAL NET INCOME (USD/ha/year)
+insured_net_annual_index <- baseline_annual_income - farmer_pays_index + index_payout
+insured_net_annual_traditional <- baseline_annual_income - farmer_pays_traditional + traditional_payout
+insured_net_annual_hybrid <- baseline_annual_income - farmer_pays_hybrid + hybrid_payout
   # Risk-adjusted premiums based on farm characteristics
-  risk_adjustment_factor <- vulnerability * exposure_risks * 
-    (1 - risk_mitigating_practices * 0.3) # Risk reduction from good practices
+  # Insurance companies use sophisticated risk-rating models
+  # Base risk score (simplified GLM approach)
+  # mimics how real agricultural insurers price policies while remaining implementable in your decision model.
+  risk_score <- (vulnerability * 0.25 + 
+                   exposure_risks * 0.35 + 
+                   (1 - risk_mitigating_practices) * 0.20 +
+                   spatial_geophysical * 0.15 +
+                   log(af_system_size) * -0.05)
   
-  # Final premium calculations
-  premium_index <- base_premium_index_adj * risk_adjustment_factor
-  premium_traditional <- base_premium_traditional_adj * risk_adjustment_factor
-  premium_hybrid <- base_premium_hybrid_adj * risk_adjustment_factor
+  # Experience rating component
+  experience_modifier <- pmin(pmax(loss_ratio, 0.5), 2.0)  # Cap at 200%
+  
+  # Credibility-weighted final premium
+  final_loss_ratio <- (credibility_factor * experience_modifier + 
+                         (1 - credibility_factor) * pool_loss_ratio)
+  
+  # Add catastrophe load for extreme events
+  catastrophe_loading <- catastrophe_load * likelihood_extreme_events
+  
   
   # Subsidy calculations
-  subsidy_level <- vv(subsidized, var_CV, n_years)
+  # Government subsidy scenarios
+  subsidy_level <- chance_event(if_subsidy_available, value_if = 0.7, value_if_not = 0.3)
+  
+  # # Liquidity constraints 
+  # liquidity_constraint <- ifelse(farmer_pays_final > liquidity_available, 0, 1)
+  
+  # Revised decision: Insurance vs. expected aid + self-insurance
+ # net_benefit_insurance <- NPV_hybrid_farmer - expected_aid 
+  
   farmer_pays_final_index <- premium_index * (1 - subsidy_level)
   farmer_pays_final_traditional <- premium_traditional * (1 - subsidy_level)
   farmer_pays_final_hybrid <- premium_hybrid * (1 - subsidy_level)
@@ -56,12 +134,11 @@ agroforestry_insurance_function <- function(x, varnames){
   uptake_probability_traditional <- pmin(pmax(uptake_insurance * uptake_drivers * 0.8 / 25, 0), 1)
   uptake_probability_hybrid <- pmin(pmax(uptake_insurance * uptake_drivers * 0.9 / 25, 0), 1)
   
-  
   # Create time series of uptake events
-  uptake_index <- chance_event(uptake_probability_index_adj, value_if = 1, value_if_not = 0, n = n_years)
-  uptake_traditional <- chance_event(uptake_probability_traditional_adj, value_if = 1, value_if_not = 0, n = n_years)
-  uptake_hybrid <- chance_event(uptake_probability_hybrid_adj, value_if = 1, value_if_not = 0, n = n_years)
- 
+  uptake_index <- chance_event(uptake_probability_index, value_if = 1, value_if_not = 0, n = n_years)
+  uptake_traditional <- chance_event(uptake_probability_traditional, value_if = 1, value_if_not = 0, n = n_years)
+  uptake_hybrid <- chance_event(uptake_probability_hybrid, value_if = 1, value_if_not = 0, n = n_years)
+  
    # Risk Events and Payouts ####
   
   # Hazard occurrence 
@@ -69,7 +146,16 @@ agroforestry_insurance_function <- function(x, varnames){
   hazard_occurrence <- chance_event(hazard_probability_adj, value_if = 1, value_if_not = 0, n = n_years)
   
   # Damage calculation based on hazard and vulnerability
-  damage_magnitude <- hazard_occurrence * vulnerability * exposure_risks
+  total_insured_value <- (tree_value_per_ha + crop_value_per_ha) * af_system_size
+  traditional_payout <- ifelse(
+    typhoon_loss_rate > 0,
+    typhoon_loss_rate * max_payout_traditional * total_insured_value * damage_assessment_accuracy,
+    0
+  )
+  
+  # Final premium calculation
+  premium_index <- base_premium_index * risk_score * final_loss_ratio * 
+    (1 + catastrophe_loading) * total_insured_value
   
   # Insurance payouts with trigger thresholds
   index_trigger_threshold <- 0.3
@@ -78,16 +164,19 @@ agroforestry_insurance_function <- function(x, varnames){
   damage_assessment_accuracy <- 0.8
   
   # Index-based insurance payout (based on triggers)
+  # Use the agroforestry valuation from traditional insurance
+  total_insured_value <- (tree_value_per_ha + crop_value_per_ha) * af_system_size
+  
   index_payout <- ifelse(
-    damage_magnitude > index_trigger_threshold,
-    damage_magnitude * max_payout_index * 10000, # Scale to meaningful values
+    typhoon_loss_rate > index_trigger_threshold,
+    (typhoon_loss_rate - index_trigger_threshold) * max_payout_index * total_insured_value * (1 - basis_risk),
     0
   )
   
   # Traditional insurance payout (based on damage assessment)
   traditional_payout <- ifelse(
-    damage_magnitude > 0,
-    damage_magnitude * max_payout_traditional * 10000 * damage_assessment_accuracy,
+    typhoon_loss_rate > 0,
+    typhoon_loss_rate * max_payout_traditional * 10000 * damage_assessment_accuracy,
     0
   )
   
@@ -95,20 +184,19 @@ agroforestry_insurance_function <- function(x, varnames){
   hybrid_payout <- (index_payout * 0.6) + (traditional_payout * 0.4)
   
   # Costs for Insurers ####
-  admin_costs_index <- vv(rep(10000, n_years), var_CV, n_years)
-  admin_costs_traditional <- vv(rep(15000, n_years), var_CV, n_years)
-  admin_costs_hybrid <- vv(rep(12000, n_years), var_CV, n_years)
+  admin_costs_index_adj <- vv(rep(admin_costs_index, n_years), var_CV, n_years)
+  admin_costs_traditional_adj <- vv(rep(admin_costs_traditional, n_years), var_CV, n_years)
+  admin_costs_hybrid_adj <- vv(rep(admin_costs_hybrid, n_years), var_CV, n_years)
   
   # Claims processing costs
-  claims_processing_rate <- 0.05
   claims_costs_index <- index_payout * claims_processing_rate
   claims_costs_traditional <- traditional_payout * claims_processing_rate * 1.5
   claims_costs_hybrid <- hybrid_payout * claims_processing_rate * 1.2
   
   # Total costs for each scheme
-  total_costs_index <- admin_costs_index + claims_costs_index
-  total_costs_traditional <- admin_costs_traditional + claims_costs_traditional
-  total_costs_hybrid <- admin_costs_hybrid + claims_costs_hybrid
+  total_costs_index <- admin_costs_index_adj + claims_costs_index
+  total_costs_traditional <- admin_costs_traditional_adj + claims_costs_traditional
+  total_costs_hybrid <- admin_costs_hybrid_adj + claims_costs_hybrid
   
   # Revenues for Insurers ####
   premium_revenue_index <- premium_index * number_insured * 100 * uptake_index
@@ -121,19 +209,18 @@ agroforestry_insurance_function <- function(x, varnames){
   insurer_net_hybrid <- premium_revenue_hybrid - total_costs_hybrid
   
   # Farmer Benefits and Costs ####
-  
   # Direct financial benefits
   farmer_benefit_index <- index_payout * uptake_index - farmer_pays_final_index * 100
   farmer_benefit_traditional <- traditional_payout * uptake_traditional - farmer_pays_final_traditional * 100
   farmer_benefit_hybrid <- hybrid_payout * uptake_hybrid - farmer_pays_final_hybrid * 100
   
   # Risk reduction benefits (enables investment)
-  risk_reduction_value <- vv(rep(2000, n_years), var_CV, n_years)
-  risk_reduction_benefit <- risk_reduction_value * (1 - damage_magnitude) * uptake_insurance
+  risk_reduction_value_adj <- vv(rep(risk_reduction_value, n_years), var_CV, n_years)
+  risk_reduction_benefit <- risk_reduction_value_adj * (1 - typhoon_loss_rate) * uptake_insurance
   
   # Behavioral benefits (improved farm management)
-  management_improvement_value <- vv(rep(1500, n_years), var_CV, n_years)
-  management_improvement_benefit <- management_improvement_value * risk_mitigating_practices * uptake_insurance
+  management_improvement_value_adj <- vv(rep(management_improvement_value, n_years), var_CV, n_years)
+  management_improvement_benefit <- management_improvement_value_adj * risk_mitigating_practices * uptake_insurance
   
   # Social and Equity Benefits ####
   
@@ -221,37 +308,37 @@ agroforestry_insurance_function <- function(x, varnames){
   
   no_insurance_net <- no_insurance_benefits - no_insurance_costs
   
+# No Insurance ########
+  # # Post-typhoon aid expectation (moral hazard)
+  expected_aid <- vv(aid_expectation, var_CV, n_years) * hazard_occurrence
+  
+  
   # Final NPV Calculations ####
-  
-  # Discount rates
-  farmer_discount_rate <- 0.05
-  social_discount_rate <- 0.03
-  
   # NPV for different perspectives
   
   # Farmer perspective (financial only)
   NPV_index_farmer <- discount(
     total_farmer_benefit_index - no_insurance_net,
-    discount_rate = farmer_discount_rate,
+    discount_rate = farmer_discount_rate/100,
     calculate_NPV = TRUE
   )
   
   NPV_traditional_farmer <- discount(
     total_farmer_benefit_traditional - no_insurance_net,
-    discount_rate = farmer_discount_rate,
+    discount_rate = farmer_discount_rate/100,
     calculate_NPV = TRUE
   )
   
   NPV_hybrid_farmer <- discount(
     total_farmer_benefit_hybrid - no_insurance_net,
-    discount_rate = farmer_discount_rate,
+    discount_rate = farmer_discount_rate/100,
     calculate_NPV = TRUE
   )
   
   # Social perspective (including social and ecological benefits)
   NPV_index_social <- discount(
     total_farmer_benefit_index + total_social_benefit + total_ecological_benefit - no_insurance_net,
-    discount_rate = social_discount_rate,
+    discount_rate = social_discount_rate/100,
     calculate_NPV = TRUE
   )
   
@@ -286,6 +373,16 @@ agroforestry_insurance_function <- function(x, varnames){
     calculate_NPV = TRUE
   )
   
+  # In typhoon-prone SE Asia (Philippines, Vietnam, etc.), the real decision is:
+  #   Option A: Pay insurance premiums and get protection
+  # Option B: Self-insure (save money, diversify, rely on government aid)
+  # Option C: Do nothing and absorb losses
+# Philippines Reality Check:
+#     Typical farmer: Marginal profits, liquidity constraints
+#   Actual behavior: Most DON'T buy insurance unless heavily subsidized
+# Reason: Premiums feel like "certain loss" vs. "probable loss" from typhoons
+# Government role: Major subsidizer through PCIC (Philippine Crop Insurance Corp)
+
   # Return Results ####
   return(list(
     # Financial NPVs (farmer perspective)
@@ -322,3 +419,4 @@ agroforestry_insurance_function <- function(x, varnames){
     total_ecological_benefits = sum(total_ecological_benefit)
   ))
 }
+

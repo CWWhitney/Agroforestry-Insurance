@@ -11,6 +11,26 @@ bibliography: packages.bib
 link-citations: yes
 ---
 
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE,
+               out.width = "75%", 
+               fig.align = "center", 
+               warning = FALSE, 
+               message = FALSE) 
+
+library(akima)
+library(decisionSupport)
+library(ggstance)
+library(gtExtras)
+library(patchwork)
+library(plotly)
+library(rPref)
+library(svglite)
+library(tidyverse)
+
+```
+
 # Decision Model for Agroforestry Insurance
 
 Decision Analysis (DA) can be used to support practical decisions in agroforestry insurance design under risk and uncertainty. It can generate robust and science-based decision support by integrating data and expert knowledge on insurance mechanisms and their impacts on agroforestry systems. We demonstrate DA model development techniques to support the difficult task of deciding which insurance schemes to implement, given the complex nature of agroforestry risks and farmer perceptions.
@@ -81,6 +101,26 @@ The decision model evaluates the net benefits of different insurance schemes for
 4. Behavioral impacts on farm management
 5. Systemic risk factors
 
+```{r mcsimulation, warning=FALSE, message=FALSE}
+# Source our model
+source("AF_Insurance_model.R")
+
+# Ensure consistent results with the random number generator
+# not for each 'run' of the MC simulation but for 
+# consistency each time we run the entire simulation 
+set.seed(42)
+
+agroforestry_insurance_simulation_results <- mcSimulation(
+  estimate = estimate_read_csv("data/Agroforestry_insurance_input_table.csv"),
+  model_function = agroforestry_insurance_function,
+  numberOfModelRuns = 1e4, #run 10,000 times
+  functionSyntax = "plainNames"
+)
+
+```
+
+The Net Present Value (i.e. current value of the future benefits) of the garden decision options over `r agroforestry_insurance_simulation_results$x$n_years[1]` years of the insurance scheme intervention. 
+
 ## Results and Decision Support
 
 The model provides probabilistic outcomes for each insurance scheme, allowing decision-makers to:
@@ -89,6 +129,56 @@ The model provides probabilistic outcomes for each insurance scheme, allowing de
 - Assess risk-return tradeoffs
 - Identify critical uncertainties
 - Develop robust insurance strategies
+
+
+```{r plot_dist_farmer, warning=FALSE, message=FALSE}
+# NPV is USD total net benefit over the project period 
+plot_distributions(mcSimulation_object = agroforestry_insurance_simulation_results, 
+                   vars = c("NPV_index_farmer", "NPV_traditional_farmer", "NPV_hybrid_farmer"),
+                   old_names = c("NPV_index_farmer", "NPV_traditional_farmer", "NPV_hybrid_farmer"),
+                   new_names = c("Index-based insurance NPV","Traditional insurance NPV", "Hybrid insurance NPV"),
+                                    method = "boxplot", 
+                                    base_size = 11, 
+                                    x_axis_name = "Net Present Value (NPV) farmer perspective (USD over the project period)")
+
+ggsave("figures/NPV_Boxplots_Farmer.png", width = 15, height = 8, units = "cm")
+```
+```{r plot_dist_social, warning=FALSE, message=FALSE}
+# NPV is USD total net benefit over the project period 
+plot_distributions(mcSimulation_object = agroforestry_insurance_simulation_results, 
+                   vars = c("NPV_index_social", 
+                             "NPV_traditional_social",
+                             "NPV_hybrid_social"),
+                   old_names = c( "NPV_index_social", 
+                             "NPV_traditional_social",
+                             "NPV_hybrid_social"),
+                   new_names = c("Index-based insurance NPV",
+                                 "Traditional insurance NPV", 
+                                 "Hybrid insurance NPV"),
+                                    method = "boxplot", 
+                                    base_size = 11, 
+                                    x_axis_name = "Net Present Value (NPV) society perspective (USD over the project period)")
+
+ggsave("figures/NPV_Boxplots_Social.png", width = 15, height = 8, units = "cm")
+```
+```{r plot_dist_insurer, warning=FALSE, message=FALSE}
+# NPV is USD total net benefit over the project period 
+plot_distributions(mcSimulation_object = agroforestry_insurance_simulation_results, 
+                   vars = c("NPV_index_insurer", 
+                            "NPV_traditional_insurer", 
+                            "NPV_hybrid_insurer"),
+                   old_names = c("NPV_index_insurer", 
+                            "NPV_traditional_insurer", 
+                            "NPV_hybrid_insurer"),
+                   new_names = c("Index-based insurance NPV",
+                                 "Traditional insurance NPV", 
+                                 "Hybrid insurance NPV"),
+                                    method = "boxplot", 
+                                    base_size = 11, 
+                                    x_axis_name = "Net Present Value (NPV) insurer perspective (USD over the project period)")
+
+ggsave("figures/NPV_Boxplots_Insurer.png", width = 15, height = 8, units = "cm")
+```
 
 ## Conclusion
 
