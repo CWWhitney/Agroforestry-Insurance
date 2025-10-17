@@ -1,16 +1,29 @@
+library(decisionSupport)
+# function to make variables and test the model
+# used only in model construction
 
+make_variables <- function(est,n=1)
+{x <- decisionSupport::random(rho=est,n=n)
+for(i in colnames(x))assign(i, as.numeric(x[1,i]),envir=.GlobalEnv)}
 
+make_variables(decisionSupport::estimate_read_csv(paste("data/Agroforestry_insurance_input_table.csv",sep="")))
+
+data <- read.csv("data/Agroforestry_insurance_input_table.csv")
 
 # Agroforestry Insurance Decision Model Function
 agroforestry_insurance_function <- function(x, varnames){
+  
+  # Constant variables needed for the model
+  n_years <- 20  # Project timeline
+  var_CV <- 10   # Coefficient of variation for time series
   
   # Insurance Scheme Selection
   # Three main insurance types: index-based, traditional, and hybrid
   
   # Premium Calculations
-  base_premium_index <- vv(base_premium_index, var_CV, n_years)
-  base_premium_traditional <- vv(base_premium_traditional, var_CV, n_years)
-  base_premium_hybrid <- vv(base_premium_hybrid, var_CV, n_years)
+  base_premium_index <- vv(rep(0.03, n_years), var_CV, n_years)
+  base_premium_traditional <- vv(rep(0.05, n_years), var_CV, n_years)
+  base_premium_hybrid <- vv(rep(0.04, n_years), var_CV, n_years)
   
   # Risk-adjusted premiums based on farm characteristics
   risk_adjustment_factor <- vulnerability * exposure_risks * 
@@ -28,7 +41,7 @@ agroforestry_insurance_function <- function(x, varnames){
   farmer_pays_final_hybrid <- premium_hybrid * (1 - subsidy_level)
   
   # Insurance Uptake ####
-  # Factors influencing uptake
+  # Factors influencing uptake - using chance_event correctly
   uptake_drivers <- min(
     farmers_understand_insurance,
     affordability_premium,
@@ -37,30 +50,41 @@ agroforestry_insurance_function <- function(x, varnames){
     cultural_acceptance
   )
   
-  # Chance events for uptake
-  uptake_index <- chance_event(uptake_insurance * uptake_drivers, 1, 0, n = n_years)
-  uptake_traditional <- chance_event(uptake_insurance * uptake_drivers * 0.8, 1, 0, n = n_years)
-  uptake_hybrid <- chance_event(uptake_insurance * uptake_drivers * 0.9, 1, 0, n = n_years)
+  # Chance events for uptake - CORRECTED usage
+  uptake_probability_index <- uptake_insurance * uptake_drivers
+  uptake_probability_traditional <- uptake_insurance * uptake_drivers * 0.8
+  uptake_probability_hybrid <- uptake_insurance * uptake_drivers * 0.9
+  
+  # Create time series of uptake events
+  uptake_index <- chance_event(uptake_probability_index, value_if = 1, value_if_not = 0, n = n_years)
+  uptake_traditional <- chance_event(uptake_probability_traditional, value_if = 1, value_if_not = 0, n = n_years)
+  uptake_hybrid <- chance_event(uptake_probability_hybrid, value_if = 1, value_if_not = 0, n = n_years)
   
   # Risk Events and Payouts ####
   
-  # Hazard occurrence
-  hazard_occurrence <- chance_event(hazard, 1, 0, n = n_years)
+  # Hazard occurrence - CORRECTED usage
+  hazard_occurrence <- chance_event(hazard, value_if = 1, value_if_not = 0, n = n_years)
   
   # Damage calculation based on hazard and vulnerability
   damage_magnitude <- hazard_occurrence * vulnerability * exposure_risks
   
+  # Insurance payouts with trigger thresholds
+  index_trigger_threshold <- 0.3
+  max_payout_index <- 0.8
+  max_payout_traditional <- 0.9
+  damage_assessment_accuracy <- 0.8
+  
   # Index-based insurance payout (based on triggers)
   index_payout <- ifelse(
     damage_magnitude > index_trigger_threshold,
-    damage_magnitude * max_payout_index,
+    damage_magnitude * max_payout_index * 10000, # Scale to meaningful values
     0
   )
   
   # Traditional insurance payout (based on damage assessment)
   traditional_payout <- ifelse(
     damage_magnitude > 0,
-    damage_magnitude * max_payout_traditional * damage_assessment_accuracy,
+    damage_magnitude * max_payout_traditional * 10000 * damage_assessment_accuracy,
     0
   )
   
@@ -68,15 +92,14 @@ agroforestry_insurance_function <- function(x, varnames){
   hybrid_payout <- (index_payout * 0.6) + (traditional_payout * 0.4)
   
   # Costs for Insurers ####
-  
-  # Administrative costs
-  admin_costs_index <- vv(admin_costs_index, var_CV, n_years)
-  admin_costs_traditional <- vv(admin_costs_traditional, var_CV, n_years)
-  admin_costs_hybrid <- vv(admin_costs_hybrid, var_CV, n_years)
+  admin_costs_index <- vv(rep(10000, n_years), var_CV, n_years)
+  admin_costs_traditional <- vv(rep(15000, n_years), var_CV, n_years)
+  admin_costs_hybrid <- vv(rep(12000, n_years), var_CV, n_years)
   
   # Claims processing costs
+  claims_processing_rate <- 0.05
   claims_costs_index <- index_payout * claims_processing_rate
-  claims_costs_traditional <- traditional_payout * claims_processing_rate * 1.5 # Higher for traditional
+  claims_costs_traditional <- traditional_payout * claims_processing_rate * 1.5
   claims_costs_hybrid <- hybrid_payout * claims_processing_rate * 1.2
   
   # Total costs for each scheme
@@ -85,9 +108,9 @@ agroforestry_insurance_function <- function(x, varnames){
   total_costs_hybrid <- admin_costs_hybrid + claims_costs_hybrid
   
   # Revenues for Insurers ####
-  premium_revenue_index <- premium_index * number_insured * uptake_index
-  premium_revenue_traditional <- premium_traditional * number_insured * uptake_traditional
-  premium_revenue_hybrid <- premium_hybrid * number_insured * uptake_hybrid
+  premium_revenue_index <- premium_index * number_insured * 100 * uptake_index
+  premium_revenue_traditional <- premium_traditional * number_insured * 100 * uptake_traditional
+  premium_revenue_hybrid <- premium_hybrid * number_insured * 100 * uptake_hybrid
   
   # Net insurer results
   insurer_net_index <- premium_revenue_index - total_costs_index
@@ -97,41 +120,41 @@ agroforestry_insurance_function <- function(x, varnames){
   # Farmer Benefits and Costs ####
   
   # Direct financial benefits
-  farmer_benefit_index <- index_payout * uptake_index - farmer_pays_final_index
-  farmer_benefit_traditional <- traditional_payout * uptake_traditional - farmer_pays_final_traditional
-  farmer_benefit_hybrid <- hybrid_payout * uptake_hybrid - farmer_pays_final_hybrid
+  farmer_benefit_index <- index_payout * uptake_index - farmer_pays_final_index * 100
+  farmer_benefit_traditional <- traditional_payout * uptake_traditional - farmer_pays_final_traditional * 100
+  farmer_benefit_hybrid <- hybrid_payout * uptake_hybrid - farmer_pays_final_hybrid * 100
   
   # Risk reduction benefits (enables investment)
-  risk_reduction_benefit <- vv(risk_reduction_value, var_CV, n_years) * 
-    (1 - damage_magnitude) * uptake_insurance
+  risk_reduction_value <- vv(rep(2000, n_years), var_CV, n_years)
+  risk_reduction_benefit <- risk_reduction_value * (1 - damage_magnitude) * uptake_insurance
   
   # Behavioral benefits (improved farm management)
-  management_improvement_benefit <- vv(management_improvement_value, var_CV, n_years) * 
-    risk_mitigating_practices * uptake_insurance
+  management_improvement_value <- vv(rep(1500, n_years), var_CV, n_years)
+  management_improvement_benefit <- management_improvement_value * risk_mitigating_practices * uptake_insurance
   
   # Social and Equity Benefits ####
   
   # Climate justice benefits
   climate_justice_benefit <- vv(climate_justice, var_CV, n_years) * 
-    equity * fairness * uptake_insurance
+    equity * fairness * uptake_insurance * 1000
   
   # Community cohesion benefits
   community_benefit <- vv(cohesiveness_community, var_CV, n_years) * 
-    participatory * uptake_insurance
+    participatory * uptake_insurance * 500
   
   # Gender equity benefits
   gender_equity_benefit <- vv(gendered_decision_making, var_CV, n_years) * 
-    equity * uptake_insurance
+    equity * uptake_insurance * 300
   
   # Ecological Benefits ####
   
   # Agroforestry resilience benefits
   agroforestry_resilience_benefit <- vv(farm_resilience, var_CV, n_years) * 
-    factors_resilience * af_profile * uptake_insurance
+    factors_resilience * af_profile * uptake_insurance * 800
   
   # Biodiversity benefits
   biodiversity_benefit <- vv(ecological_conditions, var_CV, n_years) * 
-    diversity_of_group * uptake_insurance
+    diversity_of_group * uptake_insurance * 600
   
   # Risk Factors and Barriers ####
   
@@ -186,18 +209,20 @@ agroforestry_insurance_function <- function(x, varnames){
   # Alternative Scenario: No Insurance ####
   
   # Costs without insurance (self-insurance, savings, etc.)
-  no_insurance_costs <- vv(self_insurance_costs, var_CV, n_years) * vulnerability
+  self_insurance_costs <- vv(rep(5000, n_years), var_CV, n_years)
+  no_insurance_costs <- self_insurance_costs * vulnerability
   
   # Benefits without insurance (invested elsewhere)
-  no_insurance_benefits <- vv(alternative_investment_returns, var_CV, n_years)
+  alternative_investment_returns <- vv(rep(3000, n_years), var_CV, n_years)
+  no_insurance_benefits <- alternative_investment_returns
   
   no_insurance_net <- no_insurance_benefits - no_insurance_costs
   
   # Final NPV Calculations ####
   
   # Discount rates
-  farmer_discount_rate <- vv(farmer_discount_rate, var_CV, n_years)
-  social_discount_rate <- vv(social_discount_rate, var_CV, n_years)
+  farmer_discount_rate <- 0.05
+  social_discount_rate <- 0.03
   
   # NPV for different perspectives
   

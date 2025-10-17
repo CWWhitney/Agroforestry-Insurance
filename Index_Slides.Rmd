@@ -25,6 +25,7 @@ output:
 - **Farmer Burden**: New costs and management risks  
 - **Climate Vulnerability**: Compounded by climate variability in tropics
 - **Limited Tools**: Poor access to risk management instruments
+![](figures/icon_trees_water.png)
 ]
 
 .pull-right[
@@ -96,7 +97,7 @@ output:
 - **Objective Risks**: Climate hazards, market volatility
 - **Perceived Risks**: Cultural beliefs, past experiences  
 - **Insurance Impact**: Mediated by perception gaps
-
+![](figures/icon_weigh_risk.png)
 **Critical Insight**: Insurance design must account for both objective and perceived risks
 ]
 
